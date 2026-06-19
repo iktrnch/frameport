@@ -1,0 +1,111 @@
+# Intended dependency and data-flow direction for Frameport.
+# Read this top-to-bottom: UI events enter through Tauri commands, the app crate
+# coordinates work, and real product behavior lives in engine/db/settings.
+
+# direction: down
+
+ui: {
+  label: "ui\nSvelte / SvelteKit frontend"
+  shape: rectangle
+
+  routes: "Routes and views"
+  components: "Shared UI components"
+  invoke: "Tauri invoke() calls"
+
+  routes -> components: "render and collect user intent"
+  components -> invoke: "request app actions"
+}
+
+app: {
+  label: "app\nTauri shell and binary crate"
+  shape: rectangle
+
+  commands: "Command handlers"
+  state: "Managed app state"
+  setup: "Setup and plugins"
+  errors: "Error conversion"
+
+  setup -> state: "initialise"
+  commands -> state: "read/update"
+  commands -> errors: "convert failures for UI"
+}
+
+engine: {
+  label: "engine\nApplication logic and algorithms"
+  shape: rectangle
+
+  workflows: "Import and media workflows"
+  scan: "Media scanning"
+  plan: "Import planning"
+  dedupe: "Duplicate detection"
+  metadata: "Metadata handling"
+  validate: "Validation rules"
+  organise: "File organisation"
+
+  workflows -> scan
+  workflows -> metadata
+  workflows -> dedupe
+  workflows -> validate
+  workflows -> plan
+  workflows -> organise
+}
+
+db: {
+  label: "db\nSQLx persistence layer"
+  shape: cylinder
+
+  migrations: "Migrations"
+  repos: "Repository functions"
+  rows: "Database rows"
+  models: "Database models"
+
+  migrations -> repos: "schema used by"
+  repos -> rows: "read/write"
+  rows -> models: "map into"
+}
+
+settings: {
+  label: "settings\nConfiguration layer"
+  shape: rectangle
+
+  structs: "Config structs"
+  defaults: "Default values"
+  paths: "Config paths"
+  load_save: "Load/save logic"
+
+  defaults -> structs
+  paths -> load_save
+  load_save -> structs
+}
+
+media: {
+  label: "Local media files"
+  shape: rectangle
+}
+
+ui.invoke -> app.commands: "invoke command"
+app.commands -> settings.load_save: "load/save configuration"
+app.commands -> engine.workflows: "delegate product logic"
+engine.scan -> media: "inspect files"
+engine.organise -> media: "copy/move into library"
+app.commands -> db.repos: "query and persist results"
+db.models -> engine.workflows: "use domain types when needed"
+app.errors -> ui.routes: "return typed result or error"
+
+rules: {
+  label: "Dependency rules"
+  shape: rectangle
+
+  text: |md
+    - `ui` only talks to `app` through Tauri `invoke()`.
+    - `app` owns Tauri setup, commands, state, plugins, and error conversion.
+    - `app` stays thin and delegates product behavior to `engine`.
+    - `engine` does not depend on `app`, `db`, Tauri, or SQLx.
+    - `db` may depend on `engine` domain types, but not on `app`.
+    - `settings` stays independent and does not depend on `app`.
+  |
+}
+
+rules.style.fill: "#fff7ed"
+rules.style.stroke: "#c2410c"
+rules.style.stroke-width: 2
