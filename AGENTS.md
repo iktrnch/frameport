@@ -6,12 +6,12 @@ Frameport is a local-first media import and management desktop app. Rust code is
 
 ## Build, Test, and Development Commands
 
-- `npm run dev`: starts the Tauri app from `app/`.
-- `npm run build`: builds the Tauri desktop app.
-- `npm run ui:dev`: runs the Vite/Svelte development server for frontend-only work.
-- `npm run ui:build`: builds the Svelte app.
-- `npm run ui:check`: runs `svelte-check` with `ui/tsconfig.json`.
-- `npm --prefix ui run lint`: checks frontend formatting and ESLint rules.
+- `pnpm run dev`: starts the Tauri app from `app/`.
+- `pnpm run build`: builds the Tauri desktop app.
+- `pnpm run ui:dev`: runs the Vite/Svelte development server for frontend-only work.
+- `pnpm run ui:build`: builds the Svelte app.
+- `pnpm run ui:check`: runs `svelte-check` with `ui/tsconfig.json`.
+- `pnpm --prefix ui run lint`: checks frontend formatting and ESLint rules.
 - `cargo check` or `cargo test` inside a crate, such as `engine/` or `app/`: checks or tests that crate. Root scripts include workspace commands, but there is currently no root `Cargo.toml`.
 
 ## Coding Style & Naming Conventions
