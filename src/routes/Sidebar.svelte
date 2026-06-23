@@ -36,7 +36,7 @@
 			<p class="truncate text-xs text-slate-400">Local user</p>
 		</div>
 		<a
-			href="/"
+			href="/settings"
 			type="button"
 			class="flex h-10 w-10 items-center justify-center rounded-r-xl rounded-l-md border border-white/10 bg-white/4 text-slate-300 shadow-sm shadow-black/20 transition hover:bg-white/8 hover:text-slate-100 focus:outline-none focus:ring-2 focus:ring-neutral-500"
 			aria-label="Settings"
