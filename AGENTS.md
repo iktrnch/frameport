@@ -6,7 +6,7 @@ Frameport is a local-first media import and management desktop app. Rust code is
 
 ## Build, Test, and Development Commands
 
-- `pnpm run dev`: starts the Tauri app from `app/`.
+- `__NV_DISABLE_EXPLICIT_SYNC=1 pnpm tauri dev`: starts the Tauri app from `app/`.
 - `pnpm run build`: builds the Tauri desktop app.
 - `pnpm run ui:dev`: runs the Vite/Svelte development server for frontend-only work.
 - `pnpm run ui:build`: builds the Svelte app.
