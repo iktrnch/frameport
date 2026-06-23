@@ -105,14 +105,16 @@
 				</p>
 			</div>
 
-			<div class="mt-5 rounded-xl border border-white/10 bg-white/[0.03] p-4 lg:hidden">
+			<div class="mt-5 rounded-xl border border-white/10 bg-white/3 p-4 lg:hidden">
 				<p class="text-sm font-medium text-slate-400">Running jobs</p>
 				<p class="mt-2 text-3xl font-semibold text-slate-50">{runningJobs.length}</p>
 			</div>
 
-			<div class="mt-5 hidden min-h-0 flex-1 flex-col gap-3 overflow-hidden pr-1 lg:flex lg:overflow-y-auto">
+			<div
+				class="mt-5 hidden min-h-0 flex-1 flex-col gap-3 overflow-hidden pr-1 lg:flex lg:overflow-y-auto"
+			>
 				{#each runningJobs as job}
-					<article class="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+					<article class="rounded-xl border border-white/10 bg-white/3 p-4">
 						<div class="flex items-start justify-between gap-4">
 							<div class="min-w-0">
 								<h2 class="truncate text-sm font-medium text-slate-100">
