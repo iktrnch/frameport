@@ -1,51 +1,46 @@
 <script lang="ts">
+	import Job from '$lib/Job.svelte';
+
 	type StatWidget = {
 		label: string;
 		value: string;
 	};
 
-	type JobStatus = 'Running' | 'Queued' | 'Paused';
-
-	type Job = {
+	type RunningJob = {
 		id: string;
 		name: string;
-		status: JobStatus;
-		progress: number;
-		detail: string;
+		currentAmountProcessed: number;
+		totalToBeProcessed: number;
 	};
 
 	// Replace these assignments with Tauri invoke calls once the backend commands exist.
 	let totalMedia = 1284;
 	let totalDiskUsage = '482.6 GB';
 	let duplicatesToReview = 37;
-	let runningJobs: Job[] = [
+	let runningJobs: RunningJob[] = [
 		{
 			id: 'job-001',
 			name: 'Importing camera roll',
-			status: 'Running',
-			progress: 72,
-			detail: '928 of 1,284 files scanned'
+			currentAmountProcessed: 928,
+			totalToBeProcessed: 1284
 		},
 		{
 			id: 'job-002',
 			name: 'Generating previews',
-			status: 'Running',
-			progress: 46,
-			detail: '594 thumbnails remaining'
+			currentAmountProcessed: 690,
+			totalToBeProcessed: 1284
 		},
 		{
 			id: 'job-003',
 			name: 'Duplicate analysis',
-			status: 'Queued',
-			progress: 0,
-			detail: 'Waiting for import to finish'
+			currentAmountProcessed: 0,
+			totalToBeProcessed: 1284
 		},
 		{
 			id: 'job-004',
 			name: 'Metadata indexing',
-			status: 'Paused',
-			progress: 33,
-			detail: 'Paused by user'
+			currentAmountProcessed: 424,
+			totalToBeProcessed: 1284
 		}
 	];
 
@@ -63,18 +58,6 @@
 			value: duplicatesToReview.toLocaleString()
 		}
 	];
-
-	function statusClasses(status: JobStatus) {
-		if (status === 'Running') {
-			return 'border-emerald-400/20 bg-emerald-400/10 text-emerald-200';
-		}
-
-		if (status === 'Queued') {
-			return 'border-sky-400/20 bg-sky-400/10 text-sky-200';
-		}
-
-		return 'border-amber-400/20 bg-amber-400/10 text-amber-200';
-	}
 </script>
 
 <main class="h-full overflow-hidden p-8">
@@ -114,31 +97,11 @@
 				class="mt-5 hidden min-h-0 flex-1 flex-col gap-3 overflow-hidden pr-1 lg:flex lg:overflow-y-auto"
 			>
 				{#each runningJobs as job}
-					<article class="rounded-xl border border-white/10 bg-white/3 p-4">
-						<div class="flex items-start justify-between gap-4">
-							<div class="min-w-0">
-								<h2 class="truncate text-sm font-medium text-slate-100">
-									{job.name}
-								</h2>
-								<p class="mt-1 text-sm text-slate-400">{job.detail}</p>
-							</div>
-							<span
-								class={`rounded-full border px-2.5 py-1 text-xs ${statusClasses(job.status)}`}
-							>
-								{job.status}
-							</span>
-						</div>
-
-						<div class="mt-4 flex items-center gap-3">
-							<div class="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-								<div
-									class="h-full rounded-full bg-slate-200"
-									style={`width: ${job.progress}%`}
-								></div>
-							</div>
-							<p class="w-10 text-right text-xs text-slate-400">{job.progress}%</p>
-						</div>
-					</article>
+					<Job
+						name={job.name}
+						currentAmountProcessed={job.currentAmountProcessed}
+						totalToBeProcessed={job.totalToBeProcessed}
+					/>
 				{/each}
 			</div>
 		</section>
