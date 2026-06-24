@@ -13,8 +13,10 @@
     "windows": [
       {
         "title": "frameport",
-        "width": 800,
-        "height": 600
+        "width": 900,
+        "height": 600,
+        "minWidth": 900,
+        "minHeight": 500
       }
     ],
     "security": {

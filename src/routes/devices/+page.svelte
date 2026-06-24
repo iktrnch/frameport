@@ -1,22 +1,36 @@
 <script lang="ts">
+	import Device from '$lib/Device.svelte';
 	import Modal from '$lib/Modal.svelte';
 	import NotFound from '$lib/NotFound.svelte';
 	import { Camera, ScanSearch } from '@lucide/svelte';
-	import { onMount } from 'svelte';
+	import DiscoverDevice from './DiscoverDevice.svelte';
+
+	const devices = [
+		{
+			name: 'Canon EOS R6',
+			mediaPath: '/Volumes/CANON/DCIM'
+		}
+	];
 
 	let discoverModalOpen = $state(false);
-
-	onMount(() => {
-		discoverModalOpen = true;
-	});
 </script>
 
 <div class="relative flex h-full w-full">
-	<NotFound
-		icon={Camera}
-		title="No devices added"
-		explanation="Add new device in the bottom right corner"
-	/>
+	{#if devices.length > 0}
+		<div class="h-full w-full overflow-y-auto rounded-3xl border border-white/10 bg-neutral-950/30 p-6">
+			<div class="grid gap-4">
+				{#each devices as device}
+					<Device name={device.name} mediaPath={device.mediaPath} />
+				{/each}
+			</div>
+		</div>
+	{:else}
+		<NotFound
+			icon={Camera}
+			title="No devices added"
+			explanation="Add new device in the bottom right corner"
+		/>
+	{/if}
 
 	<button
 		type="button"
@@ -36,5 +50,7 @@
 		</span>
 	</button>
 
-	<Modal bind:open={discoverModalOpen} showCloseButton />
+	<Modal bind:open={discoverModalOpen} showCloseButton>
+		<DiscoverDevice onClose={() => (discoverModalOpen = false)} />
+	</Modal>
 </div>

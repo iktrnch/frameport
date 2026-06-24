@@ -25,7 +25,7 @@
 	<section
 		role="dialog"
 		aria-modal="true"
-		class="absolute inset-0 z-20 flex h-full w-full overflow-visible rounded-3xl border border-white/10 bg-neutral-950/95 text-slate-100 shadow-2xl shadow-black/40 backdrop-blur"
+		class="absolute inset-0 z-20 flex h-full w-full overflow-visible rounded-3xl border border-white/10 bg-neutral-950 text-slate-100 shadow-2xl shadow-black/40"
 		transition:fly={{ x: 64, duration: 240 }}
 	>
 		{#if showCloseButton}
