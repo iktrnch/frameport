@@ -16,6 +16,8 @@
 		Size?: MediaPropValue;
 		creationDate?: MediaPropValue;
 		CreationDate?: MediaPropValue;
+		joinedSide?: 'left' | 'right' | 'none';
+		showActions?: boolean;
 	};
 
 	let {
@@ -28,7 +30,9 @@
 		size,
 		Size,
 		creationDate,
-		CreationDate
+		CreationDate,
+		joinedSide = 'none',
+		showActions = true
 	}: Props = $props();
 
 	let actionsOpen = $state(false);
@@ -41,6 +45,25 @@
 	let mediaSize = $derived(formatDetail(size ?? Size));
 	let createdAt = $derived(formatDetail(creationDate ?? CreationDate));
 	let mediaHref = $derived(`/media/${encodeURIComponent(mediaId)}`);
+	let articleClass = $derived(getArticleClass(joinedSide));
+	let contentClass = $derived(
+		`grid min-w-0 gap-1.5 p-3 ${showActions ? 'pb-10' : 'pb-3'}`
+	);
+
+	function getArticleClass(side: 'left' | 'right' | 'none') {
+		const base =
+			'relative flex min-w-0 flex-col overflow-hidden border border-white/10 bg-neutral-950/70';
+
+		if (side === 'left') {
+			return `${base} rounded-l-xl border-r-0 shadow-none`;
+		}
+
+		if (side === 'right') {
+			return `${base} rounded-r-xl border-l-0 shadow-none`;
+		}
+
+		return `${base} rounded-xl shadow-lg shadow-black/20`;
+	}
 
 	function formatDetail(value: MediaPropValue | undefined) {
 		if (value instanceof Date) {
@@ -81,16 +104,14 @@
 	}
 </script>
 
-<article
-	class="relative flex min-w-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-neutral-950/70 shadow-lg shadow-black/20"
->
+<article class={articleClass}>
 	<a
 		href={mediaHref}
 		aria-label={`Open ${displayName}`}
 		class="block aspect-16/10 overflow-hidden bg-white/4 focus:outline-none focus:ring-2 focus:ring-sky-200/70"
 	>
 		{#if thumbnailSrc}
-			<img src={thumbnailSrc} alt="" class="h-full w-full object-cover" />
+			<img src={thumbnailSrc} alt="" draggable="false" class="h-full w-full object-cover" />
 		{:else}
 			<div
 				class="flex h-full w-full items-center justify-center bg-white/4 text-xs text-slate-500"
@@ -100,7 +121,7 @@
 		{/if}
 	</a>
 
-	<div class="grid min-w-0 gap-1.5 p-3 pb-10">
+	<div class={contentClass}>
 		<a
 			href={mediaHref}
 			class="truncate text-sm font-semibold text-slate-50 transition hover:text-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-200/70"
@@ -115,40 +136,42 @@
 		</p>
 	</div>
 
-	<div class="absolute right-2 bottom-2">
-		<button
-			type="button"
-			aria-label={`More actions for ${displayName}`}
-			aria-expanded={actionsOpen}
-			onclick={() => (actionsOpen = !actionsOpen)}
-			class="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/4 text-slate-300 shadow-sm shadow-black/20 transition hover:bg-white/8 hover:text-slate-50 focus:outline-none focus:ring-2 focus:ring-white/10"
-		>
-			<EllipsisVertical class="h-3.5 w-3.5" aria-hidden="true" />
-		</button>
-
-		{#if actionsOpen}
-			<div
-				class="absolute right-0 bottom-9 z-10 w-32 overflow-hidden rounded-lg border border-white/10 bg-neutral-950 py-1 shadow-xl shadow-black/30"
+	{#if showActions}
+		<div class="absolute right-2 bottom-2">
+			<button
+				type="button"
+				aria-label={`More actions for ${displayName}`}
+				aria-expanded={actionsOpen}
+				onclick={() => (actionsOpen = !actionsOpen)}
+				class="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/4 text-slate-300 shadow-sm shadow-black/20 transition hover:bg-white/8 hover:text-slate-50 focus:outline-none focus:ring-2 focus:ring-white/10"
 			>
-				<button
-					type="button"
-					onclick={openRenameModal}
-					class="flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs text-slate-200 transition hover:bg-white/6"
+				<EllipsisVertical class="h-3.5 w-3.5" aria-hidden="true" />
+			</button>
+
+			{#if actionsOpen}
+				<div
+					class="absolute right-0 bottom-9 z-10 w-32 overflow-hidden rounded-lg border border-white/10 bg-neutral-950 py-1 shadow-xl shadow-black/30"
 				>
-					<Pencil class="h-3.5 w-3.5" aria-hidden="true" />
-					Rename
-				</button>
-				<button
-					type="button"
-					onclick={deleteMedia}
-					class="flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs text-red-300 transition hover:bg-red-500/10"
-				>
-					<Trash2 class="h-3.5 w-3.5" aria-hidden="true" />
-					Delete
-				</button>
-			</div>
-		{/if}
-	</div>
+					<button
+						type="button"
+						onclick={openRenameModal}
+						class="flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs text-slate-200 transition hover:bg-white/6"
+					>
+						<Pencil class="h-3.5 w-3.5" aria-hidden="true" />
+						Rename
+					</button>
+					<button
+						type="button"
+						onclick={deleteMedia}
+						class="flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs text-red-300 transition hover:bg-red-500/10"
+					>
+						<Trash2 class="h-3.5 w-3.5" aria-hidden="true" />
+						Delete
+					</button>
+				</div>
+			{/if}
+		</div>
+	{/if}
 </article>
 
 <Modal bind:open={renameModalOpen} showCloseButton onClose={closeRenameModal}>
